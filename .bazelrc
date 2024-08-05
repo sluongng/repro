@@ -1,0 +1,9 @@
+build --bes_backend=grpcs://remote.buildbuddy.io
+build --bes_results_url=https://app.buildbuddy.io/invocation/
+build --define=EXECUTOR=remote
+build --platforms=//:host
+build --extra_execution_platforms=//:remote,//:host
+build --remote_cache=grpcs://remote.buildbuddy.io
+build --remote_executor=grpcs://remote.buildbuddy.io
+
+try-import %workspace%/user.bazelrc

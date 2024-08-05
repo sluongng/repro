@@ -1,0 +1,43 @@
+constraint_setting(name = "something")
+
+constraint_value(
+    name = "has_something",
+    constraint_setting = ":something",
+    visibility = ["//visibility:public"],
+)
+
+platform(
+    name = "host",
+    constraint_values = [":has_something"],
+    exec_properties = {
+        "no-remote-exec": "1",
+    },
+    parents = ["@bazel_tools//tools:host_platform"],
+    visibility = ["//visibility:public"],
+)
+
+platform(
+    name = "remote",
+    constraint_values = [
+        "@platforms//cpu:x86_64",
+        "@platforms//os:linux",
+    ],
+    exec_properties = {
+        "OSFamily": "Linux",
+        "dockerNetwork": "off",
+    },
+)
+
+sh_test(
+    name = "test",
+    srcs = ["test.sh"],
+    exec_compatible_with = [":has_something"],
+    target_compatible_with = [":has_something"],
+)
+
+cc_test(
+    name = "cc_test",
+    srcs = ["test.cc"],
+    exec_compatible_with = ["//:has_something"],
+    target_compatible_with = ["//:has_something"],
+)
